@@ -51,20 +51,6 @@ class MyCenterWidget extends StatelessWidget {
           const SizedBox(
             height: 50.0,
           ),
-          // Row(
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: [
-          //     Expanded(
-          //       child: RawMaterialButton(
-          //         fillColor: Colors.blue,
-          //         onPressed: () {
-          //           (!started) ? start() : stop();
-          //         },
-          //         child: Text((!started) ? "start" : "stop"),
-          //       ),
-          //     )
-          //   ],
-          // )
         ],
       ),
     );
@@ -118,17 +104,15 @@ class MyInheritedWidget extends InheritedWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({required this.myChild});
-  // const MyHomePage({Key? key}) : super(key: key);
+  // ignore: use_key_in_widget_constructors
+  const MyHomePage({required this.myChild});
   final Widget myChild;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // int seconds = 0, minutes = 0, hours = 0;
   TimeData data = TimeData(0, 0, '00', '00');
-  // String defaultSeconds = "00", defaultMinutes = "00", defaultHours = "00";
   Timer? time;
   bool started = false;
 
