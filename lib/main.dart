@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
@@ -27,7 +26,6 @@ class MyApp extends StatelessWidget {
 
 class MyCenterWidget extends StatelessWidget {
   MyCenterWidget({Key? key}) : super(key: key);
-  bool started = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,7 @@ class MyCenterWidget extends StatelessWidget {
           Center(
             child: Text(
               // "$defaultHours:
-              '$defaultseconds : $defaultminutes',
+              '$defaultminutes : $defaultseconds',
               style: const TextStyle(
                 fontSize: 60,
               ),
@@ -53,20 +51,20 @@ class MyCenterWidget extends StatelessWidget {
           const SizedBox(
             height: 50.0,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: RawMaterialButton(
-                  fillColor: Colors.blue,
-                  onPressed: () {
-                    (!started) ? start() : stop();
-                  },
-                  child: Text((!started) ? "start" : "stop"),
-                ),
-              )
-            ],
-          )
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: [
+          //     Expanded(
+          //       child: RawMaterialButton(
+          //         fillColor: Colors.blue,
+          //         onPressed: () {
+          //           (!started) ? start() : stop();
+          //         },
+          //         child: Text((!started) ? "start" : "stop"),
+          //       ),
+          //     )
+          //   ],
+          // )
         ],
       ),
     );
@@ -74,10 +72,10 @@ class MyCenterWidget extends StatelessWidget {
 }
 
 class TimeData extends Equatable {
-  final int second;
-  final int minute;
-  final String defaultseconds;
-  final String defaultMinutes;
+  int second;
+  int minute;
+  String defaultseconds;
+  String defaultMinutes;
 
   TimeData(this.second, this.minute, this.defaultMinutes, this.defaultseconds);
 
@@ -106,10 +104,12 @@ class MyInheritedWidget extends InheritedWidget {
   }) : super(child: child);
 
   final TimeData myData;
+  // final int a;
 
   @override
   bool updateShouldNotify(MyInheritedWidget oldWidget) {
-    return myData != oldWidget.myData;
+    return myData.second != oldWidget.myData.second ||
+        myData.minute != oldWidget.myData.minute;
   }
 
   static MyInheritedWidget? of(BuildContext context) {
@@ -159,11 +159,18 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
       setState(() {
-        data = data.copyWith(
-          second: runSeconds,
-          minute: runMinutes,
-        );
-        // data.defaultseconds = (data.second >= 10) ? '$data.second' :;
+        // data = data.copyWith(
+        //   second: runSeconds,
+        //   minute: runMinutes,
+        // );
+        data.second = runSeconds;
+        data.minute = runMinutes;
+        data.defaultseconds =
+            (data.second >= 10) ? '${data.second}' : '0${data.second}';
+        data.defaultMinutes =
+            (data.minute >= 10) ? '${data.minute}' : '0${data.minute}';
+        // data.defaultseconds = data.second as String;
+        // data.defaultMinutes = data.minute as String;
         // seconds = runSeconds;
         // minutes = runMinutes;
         // hours = runHours;
@@ -177,13 +184,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text("Chronograph App")),
-        ),
-        body: MyInheritedWidget(
-          child: widget.myChild,
-          // myData: (seconds,minutes,hours),
-          myData: data,
-        ));
+      appBar: AppBar(
+        title: const Center(child: Text("Chronograph App")),
+      ),
+      body: Column(
+        children: <Widget>[
+          MyInheritedWidget(
+            child: MyCenterWidget(),
+            // myData: (seconds,minutes,hours),
+            myData: data,
+          ),
+          RawMaterialButton(
+            fillColor: Colors.blue,
+            onPressed: () {
+              (!started) ? start() : stop();
+            },
+            child: Text((!started) ? "start" : "stop"),
+          )
+        ],
+      ),
+    );
   }
 }
